@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="save_folder" />
+  <arg name="image_extension"        default="png" />
+  <arg name="start_index"            default="1" />
+  
+  <arg name="image_filename"         default="image_" />
+  <arg name="depth_filename"         default="depth_" />
+  <arg name="ir_filename"            default="ir_" />
+  <arg name="cloud_filename"         default="cloud_" />
+  
+  <arg name="save_image"             default="true" />
+  <arg name="save_image_camera_info" default="true" />
+  <arg name="save_ir"                default="true" />
+  <arg name="save_ir_camera_info"    default="true" />
+  <arg name="save_depth_image"       default="true" />
+  <arg name="save_depth_camera_info" default="true" />
+  <arg name="save_point_cloud"       default="true" />
+  
+  <arg name="kinect_name"            default="kinect2" />
+  <arg name="kinect_base_topic"      default="kinect2_head" />
+  
+  <!-- Convert: Depth to Point Cloud -->
+  <node pkg="nodelet" type="nodelet" name="depth_to_points_xyz_nodelet" args="standalone depth_image_proc/point_cloud_xyz"
+        respawn="false" if="$(arg save_point_cloud)">
+    <remap from="image_rect" to="/$(arg kinect_base_topic)/depth/image" />
+    <remap from="points"     to="/$(arg kinect_base_topic)/depth/points" />
+    <param name="queue_size" type="int" value="2" />
+  </node>
+
+  <!-- Capture: Image + IR + Depth + Point Cloud -->
+  <node pkg="sensor_data_collection" type="data_collection_node" name="$(arg kinect_name)_data_collection"
+        output="screen" required="true">
+    
+    <param name="device_name"             value="$(arg kinect_name)" />
+    <param name="save_folder"             value="$(arg save_folder)" />
+    <param name="image_extension"         value="$(arg image_extension)" />
+    <param name="start_index"             value="$(arg start_index)" />
+    <param name="image_filename"          value="$(arg image_filename)" />
+    <param name="ir_filename"             value="$(arg ir_filename)" />
+    <param name="depth_filename"          value="$(arg depth_filename)" />
+    <param name="cloud_filename"          value="$(arg cloud_filename)" />
+    
+    <param name="save_image"              value="$(arg save_image)" />
+    <param name="save_image_camera_info"  value="$(arg save_image_camera_info)" />
+    <param name="save_ir"                 value="$(arg save_ir)" />
+    <param name="save_ir_camera_info"     value="$(arg save_ir_camera_info)" />
+    <param name="save_depth_image"        value="$(arg save_depth_image)" />
+    <param name="save_depth_camera_info"  value="$(arg save_depth_camera_info)" />
+    <param name="save_point_cloud"        value="$(arg save_point_cloud)" />
+    
+    <param name="depth_type"              value="uint16" />
+    
+    <remap from="~action"                 to="/action" />
+    <remap from="~image"                  to="/$(arg kinect_base_topic)/rgb/image" />
+    <remap from="~image_camera_info"      to="/$(arg kinect_base_topic)/rgb/camera_info" />
+    <remap from="~ir"                     to="/$(arg kinect_base_topic)/ir/image" />
+    <remap from="~ir_camera_info"         to="/$(arg kinect_base_topic)/ir/camera_info" />
+    <remap from="~depth"                  to="/$(arg kinect_base_topic)/depth/image" />
+    <remap from="~depth_camera_info"      to="/$(arg kinect_base_topic)/depth/camera_info" />
+    <remap from="~point_cloud"            to="/$(arg kinect_base_topic)/depth/points" />
+    
+  </node>
+
+</launch>

@@ -1,14 +1,10 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="save_folder" />
-  <arg name="image_extension"        default="png" />
-  <arg name="start_index"            default="1" />
+  <arg name="save_directory" />
   
-  <arg name="image_filename"         default="image_" />
-  <arg name="depth_filename"         default="depth_" />
-  <arg name="ir_filename"            default="ir_" />
-  <arg name="cloud_filename"         default="cloud_" />
+  <arg name="continue"               default="false" />
+  <arg name="continue_from"          default="0" />
   
   <arg name="save_image"             default="true" />
   <arg name="save_image_camera_info" default="true" />
@@ -29,18 +25,20 @@
     <param name="queue_size" type="int" value="2" />
   </node>
 
+  <arg name="debug"                     default="false" />
+  <arg name="launch-prefix"             value="" unless="$(arg debug)" />
+  <arg name="launch-prefix"             value="gdb -ex run --args" if="$(arg debug)" />
+
   <!-- Capture: Image + IR + Depth + Point Cloud -->
   <node pkg="sensor_data_collection" type="data_collection_node" name="$(arg kinect_name)_data_collection"
-        output="screen" required="true">
+        launch-prefix="$(arg launch-prefix)" output="screen" required="true">
     
     <param name="device_name"             value="$(arg kinect_name)" />
-    <param name="save_folder"             value="$(arg save_folder)" />
+    <param name="save_directory"          value="$(arg save_directory)" />
     <param name="image_extension"         value="$(arg image_extension)" />
-    <param name="start_index"             value="$(arg start_index)" />
-    <param name="image_filename"          value="$(arg image_filename)" />
-    <param name="ir_filename"             value="$(arg ir_filename)" />
-    <param name="depth_filename"          value="$(arg depth_filename)" />
-    <param name="cloud_filename"          value="$(arg cloud_filename)" />
+    
+    <param name="continue"                value="$(arg continue)" />
+    <param name="continue_from"           value="$(arg continue_from)" />
     
     <param name="save_image"              value="$(arg save_image)" />
     <param name="save_image_camera_info"  value="$(arg save_image_camera_info)" />

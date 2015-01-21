@@ -16,8 +16,12 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
+find_package(Boost REQUIRED COMPONENTS filesystem)
 find_package(PCL 1.7 REQUIRED)
 find_package(OpenCV REQUIRED)
+
+#find_package(yaml-cpp REQUIRED)
+set(yaml-cpp_INCLUDE_DIRS "/usr/include/yaml-cpp/")
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -85,16 +89,13 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-
 #  LIBRARIES sensor_data_collection
-
   CATKIN_DEPENDS
   image_geometry
   cv_bridge
   image_transport
   pcl_conversions
   message_runtime
-
 #  DEPENDS system_lib
 )
 
@@ -107,8 +108,10 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+  ${yaml-cpp_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -132,6 +135,7 @@ target_link_libraries(data_collection_node
   ${catkin_LIBRARIES}
   ${PCL_LIBRARIES}
   ${OpenCV_LIBRARIES}
+  yaml-cpp
 )
 
 #############

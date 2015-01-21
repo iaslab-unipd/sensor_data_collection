@@ -311,10 +311,8 @@ private:
 
 };
 
-DataCollectionNode::DataCollectionNode(ros::NodeHandle & node_handle)
-  : node_handle_(node_handle)
+DataCollectionNode::DataCollectionNode(ros::NodeHandle & node_handle) : node_handle_(node_handle)
 {
-
   action_sub_ = node_handle.subscribe("action", 1, &DataCollectionNode::actionCallback, this);
 
   node_handle_.param("device_name", device_name_, std::string("camera"));
@@ -351,7 +349,7 @@ DataCollectionNode::DataCollectionNode(ros::NodeHandle & node_handle)
   data_[IR_CAMERA_INFO] = boost::make_shared<CameraInfoData>(node_handle_);
 
   std::string depth_type_s;
-  node_handle_.param("depth_type", depth_type_s, std::string("float32"));
+  node_handle_.param("depth_type", depth_type_s, std::string("uint16"));
   if (depth_type_s == std::string("float32"))
     data_[DEPTH] = boost::make_shared<DepthFloat32Data>(node_handle_);
   else if (depth_type_s == std::string("uint16"))
@@ -545,8 +543,6 @@ void DataCollectionNode::actionCallback(const Acquisition::ConstPtr & msg)
 
 } // namespace unipd
 
-using namespace unipd;
-
 int main(int argc,
          char ** argv)
 {
@@ -555,7 +551,7 @@ int main(int argc,
 
   try
   {
-    DataCollectionNode collector_node(node_handle);
+    unipd::DataCollectionNode collector_node(node_handle);
     if (not collector_node.initialize())
       return 0;
     ros::spin();

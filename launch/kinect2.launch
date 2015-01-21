@@ -33,9 +33,9 @@
   <node pkg="sensor_data_collection" type="data_collection_node" name="$(arg kinect_name)_data_collection"
         launch-prefix="$(arg launch-prefix)" output="screen" required="true">
     
+    <!-- Parameters -->
     <param name="device_name"             value="$(arg kinect_name)" />
     <param name="save_directory"          value="$(arg save_directory)" />
-    <param name="image_extension"         value="$(arg image_extension)" />
     
     <param name="continue"                value="$(arg continue)" />
     <param name="continue_from"           value="$(arg continue_from)" />
@@ -50,6 +50,7 @@
     
     <param name="depth_type"              value="uint16" />
     
+    <!-- Remapping arguments -->
     <remap from="~action"                 to="/action" />
     <remap from="~image"                  to="/$(arg kinect_base_topic)/rgb/image" />
     <remap from="~image_camera_info"      to="/$(arg kinect_base_topic)/rgb/camera_info" />

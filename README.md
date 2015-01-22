@@ -92,7 +92,12 @@ Set the depth type.
 ```
     <param name="depth_type"              value="uint16" />
 ```
-Remap the topics to the correct ones. We use the `if="$(arg save_*)"` to avoid subscription to unused topics. 
+First remap the `~action` topic to a global `/action` one.
+```
+    <!-- Remapping topics -->
+    <remap from="~action"            to="/action" />
+```
+Then remap all the other topics to the correct ones. We use the `if="$(arg save_*)"` to avoid subscription to unused topics. 
 ```
     <remap from="~image"             to="/real_device/rgb/image_color"   if="$(arg save_image)" />
     <remap from="~image_camera_info" to="/real_device/rgb/camera_info"   if="$(arg save_image_camera_info)" />
